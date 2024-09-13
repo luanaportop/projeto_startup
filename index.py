@@ -93,7 +93,22 @@ def atualizar_dados():
             menu()
             break
 
-#def deletar_dados():
+def deletar_dados():
+    while True:
+        dado_deletado = int(input("Qual dado deseja deletar? [1] soja [2] milho: "))
+        if dado_deletado == 1:
+            soja.clear()
+            print("Dados deletados!")
+            menu()
+            break
+        elif dado_deletado == 2:
+            milho.clear()
+            print("Dados deletado!")
+            menu()
+            break
+        else:
+            print("Opção inválida!")
+
 
 def exibir_dados():
     if len(soja) > 0 and len(milho) > 0:
@@ -129,7 +144,7 @@ def menu():
 
         elif escolha == 2:
             print("Deletar dados")
-            #deletarDados()
+            deletar_dados()
             break
 
         elif escolha == 3:
