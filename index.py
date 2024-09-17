@@ -24,8 +24,9 @@ def escolha_cultura():
                 # Calculos
                 area = calcular_area(largura, comprimento)
                 quantidade_insumo = calculo_insumos(area)
+                qtd_soja = quantidade_soja(area)
                 # Armazenando dados
-                soja.append([area, quantidade_insumo])
+                soja.append([area, quantidade_insumo, qtd_soja])
                 print("Dados armazenados!")
                 break
 
@@ -37,8 +38,9 @@ def escolha_cultura():
                 # Calculos
                 area = calcular_area(largura, comprimento)
                 quantidade_insumo = calculo_insumos(area)
+                qtd_milho = quantidade_milho(area)
                 # Armazenando dados
-                milho.append([area, quantidade_insumo])
+                milho.append([area, quantidade_insumo, qtd_milho])
                 print("Dados armazenados!")
                 break
 
@@ -65,10 +67,11 @@ def atualizar_dados():
                 #Cálculos
                 area = calcular_area(largura, comprimento)
                 quantidade_insumo = calculo_insumos(area)
+                qtd_soja = quantidade_soja(area)
                 #Limpando os dados antigos
                 soja.clear()
                 #Atualizando
-                soja.append([area, quantidade_insumo])
+                soja.append([area, quantidade_insumo, qtd_soja])
                 print("Dados atualizados!")
                 menu()
                 break
@@ -79,10 +82,11 @@ def atualizar_dados():
                 #Calculos
                 area = calcular_area(largura, comprimento)
                 quantidade_insumo = calculo_insumos(area)
+                qtd_milho = quantidade_milho(area)
                 #Limpando dados antigos
                 milho.clear()
                 #Atualizando
-                milho.append([area, quantidade_insumo])
+                milho.append([area, quantidade_insumo, qtd_milho])
                 print("Dados atualizados!")
                 menu()
                 break
@@ -122,18 +126,22 @@ def deletar_dados():
 def exibir_dados():
     if len(soja) > 0 and len(milho) > 0: #Caso tenha dados de ambas as culturas
         print(f"--- Dados da Plantação de SOJA: ---\nÁrea Plantada: {soja[0][0]} Hectar. "
-              f"\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar.\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
+              f"\nQuantidade de Soja Produzida: {soja[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar."
+              f"\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
 
         print(f"--- Dados da Plantação de MILHO: ---\nÁrea Plantada: {milho[0][0]} Hectar. "
-              f"\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar.\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
+              f"\nQuantidade de Soja Produzida: {milho[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar."
+              f"\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
         menu()
     elif len(soja) > 0 and len(milho) == 0: #Caso tenha dados apenas de soja
         print(f"--- Dados da Plantação de SOJA: ---\nÁrea Plantada: {soja[0][0]} Hectar. "
-              f"\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar.\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
+              f"\nQuantidade de Soja Produzida: {soja[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar."
+              f"\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
         menu()
     elif len(soja) == 0 and len(milho) > 0: #Caso tenha dados apenas de milho
         print(f"--- Dados da Plantação de MILHO: ---\nÁrea Plantada: {milho[0][0]} Hectar. "
-              f"\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar.\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
+              f"\nQuantidade de Soja Produzida: {milho[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar."
+              f"\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
         menu()
     else: #Caso nao tenha dados de nenhuma cultura
         print("Nenhum dado disponível.")
@@ -173,6 +181,14 @@ def menu():
                 print("Escolha Inválida!")
         except ValueError:
             print("Digite um dado válido!")
+
+def quantidade_soja(area):
+    qtd_soja = area * 3.24 #Quantidade de toneladas produzida hectar
+    return qtd_soja
+
+def quantidade_milho(area):
+    qtd_soja = area * 5.28 #Quantidade de toneladas produzida por hectar
+    return qtd_soja
 
 
 escolha_cultura()
