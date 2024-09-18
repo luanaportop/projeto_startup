@@ -1,195 +1,165 @@
-# Vetores
+import rpy2.robjects as ro
+from rpy2.robjects.vectors import FloatVector
 
+# Vetores para armazenar dados
 soja = []
 milho = []
+desvio_soja = []
+desvio_milho = []
 
-# funções
+# Funções para cálculo de média e desvio
+def calcular_media_desvios(dados):
+    if len(dados) >= 2:
+        dados_vector = FloatVector(dados)
+        media = ro.r('mean')(dados_vector)[0]
+        desvio = ro.r('sd')(dados_vector)[0]
+        return media, desvio
+    else:
+        return None, None
 
-def calcular_area (largura, comprimento): #Formato de área escolhido: retangular
-    area = (largura * comprimento) / 10000 #Área recebida em metros e transformada para hectar
-    return area
+# Função para adicionar dados
+def adicionar_dados(cultura, area, quantidade_insumo, qtd_producao):
+    cultura.append([area, quantidade_insumo, qtd_producao])
 
-def escolha_cultura():
-    while True:
-        try:
-            escolha = int(input("Digite a cultura que deseja [1] Soja e [2] Milho: "))
+# Função para calcular a área
+def calcular_area(largura, comprimento):
+    return (largura * comprimento) / 10000  # Área em hectares
 
-
-            if escolha == 1:
-
-                print("Você escolheu soja!")
-                # Entrada de dados
-                largura = float(input("Digite a largura do terreno em metros: "))
-                comprimento = float(input("Digite o comprimento do terreno em metros: "))
-                # Calculos
-                area = calcular_area(largura, comprimento)
-                quantidade_insumo = calculo_insumos(area)
-                qtd_soja = quantidade_soja(area)
-                # Armazenando dados
-                soja.append([area, quantidade_insumo, qtd_soja])
-                print("Dados armazenados!")
-                break
-
-            elif escolha == 2:
-                print("Você escolheu milho!")
-                # Entrada de dados
-                largura = float(input("Digite a largura do terreno em metros: "))
-                comprimento = float(input("Digite o comprimento do terreno em metros: "))
-                # Calculos
-                area = calcular_area(largura, comprimento)
-                quantidade_insumo = calculo_insumos(area)
-                qtd_milho = quantidade_milho(area)
-                # Armazenando dados
-                milho.append([area, quantidade_insumo, qtd_milho])
-                print("Dados armazenados!")
-                break
-
-            else:
-                print("Escolha inválida")
-
-        except ValueError:
-            print("Digite um dado válido!")
-
-def calculo_insumos (area):
-    quantidade_bifrentina = area * 150 #Quantidade de ml por hectar (produto aplicado por via aérea, nao desconta ruas)
-    quantidade_agua = area * 100 #Quantidade de litros de água necessária para diluir o insumo por hectar
+# Função para calcular os insumos
+def calculo_insumos(area):
+    quantidade_bifrentina = area * 150  # ml por hectare
+    quantidade_agua = area * 100  # litros por hectare
     return quantidade_bifrentina, quantidade_agua
 
-def atualizar_dados():
-    while True:
-        try:
-            atualizar_cultura = int(input("Digite a cultura que deseja [1] Soja e [2] Milho [3] Retornar ao menu: "))
-
-            if atualizar_cultura == 1: #soja
-                #Entrada de dados
-                largura = float(input("Digite a largura do terreno em metros: "))
-                comprimento = float(input("Digite o comprimento do terreno em metros: "))
-                #Cálculos
-                area = calcular_area(largura, comprimento)
-                quantidade_insumo = calculo_insumos(area)
-                qtd_soja = quantidade_soja(area)
-                #Limpando os dados antigos
-                soja.clear()
-                #Atualizando
-                soja.append([area, quantidade_insumo, qtd_soja])
-                print("Dados atualizados!")
-                menu()
-                break
-            elif atualizar_cultura == 2: #milho
-                #Entrada de dados
-                largura = float(input("Digite a largura do terreno em metros: "))
-                comprimento = float(input("Digite o comprimento do terreno em metros: "))
-                #Calculos
-                area = calcular_area(largura, comprimento)
-                quantidade_insumo = calculo_insumos(area)
-                qtd_milho = quantidade_milho(area)
-                #Limpando dados antigos
-                milho.clear()
-                #Atualizando
-                milho.append([area, quantidade_insumo, qtd_milho])
-                print("Dados atualizados!")
-                menu()
-                break
-            elif atualizar_cultura == 3: #Retornar ao menu
-                menu()
-                break
-            else:
-                print("Opção inválida!")
-        except ValueError:
-            print("Digite um dado válido!")
-
-def deletar_dados():
-
-    while True:
-        try:
-            dado_deletado = int(input("Digite a cultura que deseja deletar [1] Soja [2] Milho [3] Retornar ao menu: "))
-            if dado_deletado == 1: #Deletar soja
-                #Limpando dados
-                soja.clear()
-                print("Dados deletados!")
-                menu()
-                break
-            elif dado_deletado == 2: #Deletar milho
-                #Limpando
-                milho.clear()
-                print("Dados deletados!")
-                menu()
-                break
-            elif dado_deletado == 3: #Retornar ao menu
-                menu()
-                break
-            else:
-                print("Opção inválida!")
-        except ValueError:
-            print("Digite um dado válido!")
-
-def exibir_dados():
-    if len(soja) > 0 and len(milho) > 0: #Caso tenha dados de ambas as culturas
-        print(f"--- Dados da Plantação de SOJA: ---\nÁrea Plantada: {soja[0][0]} Hectar. "
-              f"\nQuantidade de Soja Produzida: {soja[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar."
-              f"\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
-
-        print(f"--- Dados da Plantação de MILHO: ---\nÁrea Plantada: {milho[0][0]} Hectar. "
-              f"\nQuantidade de Soja Produzida: {milho[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar."
-              f"\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
-        menu()
-    elif len(soja) > 0 and len(milho) == 0: #Caso tenha dados apenas de soja
-        print(f"--- Dados da Plantação de SOJA: ---\nÁrea Plantada: {soja[0][0]} Hectar. "
-              f"\nQuantidade de Soja Produzida: {soja[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {soja[0][1][0]} ML/Hectar."
-              f"\nQuantidade de Água Para Diluição do Insumo: {soja[0][1][1]} Litros.")
-        menu()
-    elif len(soja) == 0 and len(milho) > 0: #Caso tenha dados apenas de milho
-        print(f"--- Dados da Plantação de MILHO: ---\nÁrea Plantada: {milho[0][0]} Hectar. "
-              f"\nQuantidade de Soja Produzida: {milho[0][2]} Toneladas\nQuantidade de Insumo (Bifrentina): {milho[0][1][0]} ML/Hectar."
-              f"\nQuantidade de Água Para Diluição do Insumo: {milho[0][1][1]} Litros.")
-        menu()
-    else: #Caso nao tenha dados de nenhuma cultura
-        print("Nenhum dado disponível.")
-        menu()
-
-def menu():
-
-    while True:
-        try:
-            print("---MENU---")
-            print("1 - Atualizar/Inserir Novos Dados")
-            print("2 - Deletar Dados")
-            print("3 - Exibir Dados")
-            print("4 - Sair do Programa")
-
-            escolha = int(input("Escolha uma opção: "))
-
-            if escolha == 1: #Atualizar/inserir dados
-                print("Atualizar/Inserir Dados")
-                atualizar_dados()
-                break
-
-            elif escolha == 2: #Deletar dados
-                print("Deletar Dados")
-                deletar_dados()
-                break
-
-            elif escolha == 3: #Exibir Dados
-                print("Exibir Dados")
-                exibir_dados()
-                break
-
-            elif escolha == 4: #Sair do programa
-                print("Voce Saiu do Programa!")
-                break
-            else:
-                print("Escolha Inválida!")
-        except ValueError:
-            print("Digite um dado válido!")
-
+# Funções para calcular a quantidade de produção
 def quantidade_soja(area):
-    qtd_soja = area * 3.24 #Quantidade de toneladas produzida hectar
-    return qtd_soja
+    return area * 3.24  # Toneladas por hectare
 
 def quantidade_milho(area):
-    qtd_soja = area * 5.28 #Quantidade de toneladas produzida por hectar
-    return qtd_soja
+    return area * 5.28  # Toneladas por hectare
 
+# Função para mostrar estatísticas
+def mostrar_estatisticas(cultura):
+    bifrentina = [item[1][0] for item in cultura]
+    agua = [item[1][1] for item in cultura]
 
-escolha_cultura()
+    media_bifrentina, desvio_bifrentina = calcular_media_desvios(bifrentina)
+    media_agua, desvio_agua = calcular_media_desvios(agua)
+
+    if media_bifrentina is not None:
+        print(f"Média Bifrentina: {media_bifrentina}, Desvio Bifrentina: {desvio_bifrentina}")
+        print(f"Média Água: {media_agua}, Desvio Água: {desvio_agua}")
+    else:
+        print("Mais dados são necessários para calcular estatísticas.")
+
+# Função para exibir os dados
+def exibir_dados():
+    if len(soja) > 0:
+        print("--- Dados da Plantação de SOJA: ---")
+        for i, item in enumerate(soja):
+            print(f"[{i}] Área Plantada: {item[0]} ha, Produção: {item[2]} toneladas, Insumo: {item[1][0]} ml, Água: {item[1][1]} L")
+
+    if len(milho) > 0:
+        print("--- Dados da Plantação de MILHO: ---")
+        for i, item in enumerate(milho):
+            print(f"[{i}] Área Plantada: {item[0]} ha, Produção: {item[2]} toneladas, Insumo: {item[1][0]} ml, Água: {item[1][1]} L")
+
+# Função para garantir a escolha de cultura válida
+def escolher_cultura():
+    while True:
+        try:
+            cultura_escolhida = int(input("Digite a cultura que deseja [1] Soja e [2] Milho: "))
+            if cultura_escolhida in [1, 2]:
+                return cultura_escolhida
+            else:
+                print("Escolha inválida. Por favor, digite 1 para Soja ou 2 para Milho.")
+        except ValueError:
+            print("Entrada inválida. Por favor, digite 1 para Soja ou 2 para Milho.")
+
+# Função para deletar dados
+def deletar_dados(cultura):
+    exibir_dados()
+    try:
+        indice = int(input("Digite o índice do dado que deseja deletar: "))
+        if 0 <= indice < len(cultura):
+            del cultura[indice]
+            print("Dado deletado com sucesso!")
+        else:
+            print("Índice inválido.")
+    except ValueError:
+        print("Entrada inválida. Digite um número.")
+
+# Função para atualizar dados
+def atualizar_dados(cultura):
+    exibir_dados()
+    try:
+        indice = int(input("Digite o índice do dado que deseja atualizar: "))
+        if 0 <= indice < len(cultura):
+            largura = float(input("Digite a nova largura do terreno em metros: "))
+            comprimento = float(input("Digite o novo comprimento do terreno em metros: "))
+            area = calcular_area(largura, comprimento)
+            quantidade_insumo = calculo_insumos(area)
+            if cultura == soja:
+                qtd_producao = quantidade_soja(area)
+            else:
+                qtd_producao = quantidade_milho(area)
+
+            cultura[indice] = [area, quantidade_insumo, qtd_producao]
+            print("Dados atualizados com sucesso!")
+        else:
+            print("Índice inválido.")
+    except ValueError:
+        print("Entrada inválida. Digite um número.")
+
+# Menu principal
+def menu():
+    while True:
+        try:
+            escolha = int(input("Escolha uma opção: [1] Adicionar dados, [2] Mostrar Estatísticas, [3] Exibir Dados, [4] Deletar Dados, [5] Atualizar Dados, [6] Sair: "))
+            if escolha == 1:
+                cultura_escolhida = escolher_cultura()
+                largura = float(input("Digite a largura do terreno em metros: "))
+                comprimento = float(input("Digite o comprimento do terreno em metros: "))
+                area = calcular_area(largura, comprimento)
+                quantidade_insumo = calculo_insumos(area)
+                qtd_producao = quantidade_soja(area) if cultura_escolhida == 1 else quantidade_milho(area)
+
+                if cultura_escolhida == 1:
+                    adicionar_dados(soja, area, quantidade_insumo, qtd_producao)
+                else:
+                    adicionar_dados(milho, area, quantidade_insumo, qtd_producao)
+
+            elif escolha == 2:
+                cultura_escolhida = escolher_cultura()
+                if cultura_escolhida == 1:
+                    mostrar_estatisticas(soja)
+                else:
+                    mostrar_estatisticas(milho)
+
+            elif escolha == 3:
+                exibir_dados()
+
+            elif escolha == 4:
+                cultura_escolhida = escolher_cultura()
+                if cultura_escolhida == 1:
+                    deletar_dados(soja)
+                else:
+                    deletar_dados(milho)
+
+            elif escolha == 5:
+                cultura_escolhida = escolher_cultura()
+                if cultura_escolhida == 1:
+                    atualizar_dados(soja)
+                else:
+                    atualizar_dados(milho)
+
+            elif escolha == 6:
+                print("Você saiu do programa!")
+                break
+
+            else:
+                print("Opção inválida!")
+        except ValueError:
+            print("Digite um dado válido!")
+# Início do programa
 menu()
